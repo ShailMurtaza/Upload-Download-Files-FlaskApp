@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+	<title>File Upload / Download</title>
+	<link rel="stylesheet" href="/static/main.css">
+	<link rel="icon" href="/static/favicon.png" type="image/png">
+</head>
+  <body>
+	<h1>File Upload</h1>
+	<form method="POST" action="" enctype="multipart/form-data">
+	 	<p><input type="file" name="files" multiple=true required></p>
+	 	<p><input type="submit" value="Submit"></p>
+	</form>
+	  <h2>Lists of uploaded files</h2>
+	<button onclick="location.href=('/back/{{path}}')">
+		<img src="/static/back.png" atl="back"> Go Back
+	</button>
+  	<table border=1>
+		<tr class=heading><th>#</th><th>FileName</th><th>Actions</th></tr>
+		{% if not dirs == "None" %}
+			{% for dir in dirs %}
+				  <tr><th><img src="/static/{{dir[2]}}.png">
+					{{dir[0]+1}}</th><th>
+						{{dir[1]}}
+					</th>
+		<td>
+			{% if dir[2] == 'file' %}
+				<button onclick=window.open("get/{{dir[1].replace(' ', '%20')}}/") class="button primary">
+				GET ME!</button>
+			{% else %}
+				<button onclick=location.href=("get/{{dir[1].replace(' ', '%20')}}/") class="button primary">
+					GET ME!</button>
+			{% endif %}
+
+		<a href="/delete/{{path}}/{{dir[1]}}">
+		<button onclick="return confirm('Are you sure?');" class="danger button">
+			DELETE ME!
+		</button>
+		</a>
+		</td></tr>
+		{% endfor %}
+
+		{% else %}
+		<th>None</th><th>None</th><th>None</th>
+		{% endif %}
+	</table>
+	</body>
+</html>
