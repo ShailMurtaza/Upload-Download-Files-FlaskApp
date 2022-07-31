@@ -5,6 +5,7 @@ import shutil
 app = Flask(__name__)
 app.secret_key = "Secret"
 main_path = "uploads" + "/"
+main_path = "E:/Partition/Games setup/"
 
 
 def cleaner(url):
@@ -41,10 +42,18 @@ def uploaded(path):
 
 
 @app.route('/')
-@app.route('/get/<path:url>/')
+@app.route('/get/')
+@app.route('/get/<path:url>')
 def lister(url=""):
+    # print((request.url + "\n")*3)
     # path = cleaner(request.url)
     path = cleaner(url)
+    # print("#####")
+    # print(path)
+    # print("#####")
+    path2 = "/get/" + "/get/".join(path.split("/")[:-1])
+    if path2 == "/get/": path2 = "/"
+    print(path2)
     path = (main_path + path)
     if path:
         if path[-1] == "/":
@@ -53,7 +62,7 @@ def lister(url=""):
         return send_file(path)
     else:
         dirs = uploaded(path)
-        return render_template("dir.html", dirs=dirs, path=path)
+        return render_template("dir.html", dirs=dirs, path=path2)
 
 
 @app.route('/', methods=['POST'])
@@ -94,4 +103,4 @@ def delete(filename):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=80, debug=True)
