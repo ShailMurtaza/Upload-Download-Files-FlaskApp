@@ -5,7 +5,6 @@ import shutil
 app = Flask(__name__)
 app.secret_key = "Secret"
 main_path = "uploads" + "/"
-main_path = "E:/Partition/Games setup/"
 
 
 def cleaner(url):
