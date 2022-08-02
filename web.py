@@ -5,6 +5,7 @@ import shutil
 app = Flask(__name__)
 app.secret_key = "Secret"
 main_path = "uploads" + "/"
+# main_path = "upload"
 
 
 def cleaner(url):
@@ -52,7 +53,7 @@ def lister(url=""):
     # print("#####")
     path2 = "/get/" + "/get/".join(path.split("/")[:-1])
     if path2 == "/get/": path2 = "/"
-    print(path2)
+    # print(path2)
     path = (main_path + path)
     if path:
         if path[-1] == "/":
@@ -61,7 +62,8 @@ def lister(url=""):
         return send_file(path)
     else:
         dirs = uploaded(path)
-        return render_template("dir.html", dirs=dirs, path=path2)
+        print(path)
+        return render_template("dir.html", dirs=dirs, path=path2, full_path=path)
 
 
 @app.route('/', methods=['POST'])
@@ -75,9 +77,15 @@ def upload_file(url='/'):
     for file in files:
         filename = path + file.filename
         file.save(filename)
-    print(path)
-    path = path_format(path)
-    print(path)
+    # print(path)
+    # path = path_format(path)
+    # print(path)
+    if path == main_path: path = "/"
+    else:
+        path = path.replace(main_path, "")[:-1]
+        path = "/get/" + "/get/".join(path.split("/")) + "/"
+        if path == "/get/": path = "/"
+
     return redirect(path)
 
 
@@ -96,7 +104,11 @@ def delete(filename):
             os.remove(filename)
         elif os.path.isdir(filename):
             shutil.rmtree(filename)
-        path = path_format(filename)
+        path = "/".join(filename.split("/")[:-1])
+        path = path.replace(main_path, "")
+        if main_path.startswith(path):
+            return redirect("/")
+        path = "/get/" + "/get/".join(path.split("/")) + "/"
         return redirect(path)
     return redirect('/')
 
